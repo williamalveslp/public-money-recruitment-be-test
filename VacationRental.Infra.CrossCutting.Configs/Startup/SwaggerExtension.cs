@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
-using System;
+using Swashbuckle.AspNetCore.Swagger;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -21,16 +20,16 @@ namespace VacationRental.Infra.CrossCutting.Configs.Startup
                 c.EnableAnnotations();
 
                 c.SwaggerDoc(swaggerData.ServiceCollection.Version,
-                    new OpenApiInfo
+                    new Info
                     {
                         Title = serviceCollectionData?.Title,
                         Version = serviceCollectionData?.Version,
                         Description = serviceCollectionData?.Description,
-                        Contact = new OpenApiContact
+                        Contact = new Contact
                         {
                             Name = serviceCollectionData?.Contact?.Name,
                             Email = serviceCollectionData?.Contact?.Email,
-                            Url = new Uri(serviceCollectionData?.Contact?.Url)
+                            Url = serviceCollectionData?.Contact?.Url
                         }
                     });
 
