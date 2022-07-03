@@ -49,16 +49,17 @@ namespace VacationRental.Application.AppServices
 
             var rentals = _rentalsRepository.GetAll();
 
-            if (!rentals.ContainsKey(viewModel.RentalId))            
-                throw new ApplicationException("Rental not found");            
+            if (!rentals.ContainsKey(viewModel.RentalId))
+                throw new ApplicationException("Rental not found");
 
-            var _bookings = _bookingRepository.GetAll();
+            var bookings = _bookingRepository.GetAll();
 
             // TODO: Validate with FluentValidator with other list / Repository.
             for (var i = 0; i < viewModel.Nights; i++)
             {
                 var count = 0;
-                foreach (var booking in _bookings.Values)
+
+                foreach (var booking in bookings.Values)
                 {
                     if (booking.RentalId == viewModel.RentalId
                         && (booking.Start <= viewModel.Start.Date && booking.Start.AddDays(booking.Nights) > viewModel.Start.Date)

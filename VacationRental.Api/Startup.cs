@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using VacationRental.Api.Middlewares;
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.AppServices;
 using VacationRental.Application.Validations;
@@ -54,6 +57,12 @@ namespace VacationRental.Api
             services.AddValidatorsFromAssemblyContaining<BookingInsertValidator>();
             services.AddValidatorsFromAssemblyContaining<CalendarGetByFilterValidator>();
 
+            // Exception Handling
+            services.AddTransient<ExceptionHandlingMiddleware>();
+
+            // Mediator.
+            services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
+
             DependencyInjectionsLayers(services);
         }
 
@@ -72,6 +81,9 @@ namespace VacationRental.Api
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(opts => opts.SwaggerEndpoint("/swagger/v1/swagger.json", "VacationRental v1"));
+
+            // Exception Handling
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
         }
 
         private void DependencyInjectionsLayers(IServiceCollection services)

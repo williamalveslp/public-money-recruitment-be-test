@@ -7,7 +7,7 @@ namespace VacationRental.Infra.CrossCutting.Configs.Extensions
     {
         public static string GetFirstOrDefaultError(this ValidationResult validationResult)
         {
-            return validationResult?.Errors?.FirstOrDefault().ErrorMessage;
+            return validationResult?.Errors?.FirstOrDefault()?.ErrorMessage;
         }
     }
 }
