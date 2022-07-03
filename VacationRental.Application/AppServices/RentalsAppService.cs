@@ -5,6 +5,7 @@ using VacationRental.Domain.Interfaces.Repositories;
 
 namespace VacationRental.Application.AppServices
 {
+    ///<inheritdoc cref="IRentalsAppService"/>
     public class RentalsAppService : IRentalsAppService
     {
         private readonly IRentalsRepository _rentalsRepository;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.AppServices;
-using VacationRental.Application.ViewModels;
+using VacationRental.Application.Validations;
 using VacationRental.Domain.Entities;
 using VacationRental.Domain.Interfaces.Repositories;
 using VacationRental.Infra.CrossCutting.Configs.Startup;
@@ -44,11 +45,16 @@ namespace VacationRental.Api
             // Swagger.
             services.AddSwaggerExtension(Configuration);
            
+            // Storaged
             services.AddSingleton<IDictionary<int, Rental>>(new Dictionary<int, Rental>());
             services.AddSingleton<IDictionary<int, Bookings>>(new Dictionary<int, Bookings>());
             services.AddSingleton<IDictionary<int, Calendar>>(new Dictionary<int, Calendar>());
 
-            DependencyInjections(services);
+            // Validators
+            services.AddValidatorsFromAssemblyContaining<BookingInsertValidator>();
+            services.AddValidatorsFromAssemblyContaining<CalendarGetByFilterValidator>();
+
+            DependencyInjectionsLayers(services);
         }
 
         /// <summary>
@@ -68,7 +74,7 @@ namespace VacationRental.Api
             app.UseSwaggerUI(opts => opts.SwaggerEndpoint("/swagger/v1/swagger.json", "VacationRental v1"));
         }
 
-        private void DependencyInjections(IServiceCollection services)
+        private void DependencyInjectionsLayers(IServiceCollection services)
         {
             services.AddScoped<IRentalsAppService, RentalsAppService>();
             services.AddScoped<ICalendarAppService, CalendarAppService>();

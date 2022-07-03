@@ -1,24 +1,29 @@
-﻿using System;
+﻿using FluentValidation;
+using System;
 using VacationRental.Application.AppInterfaces;
-using VacationRental.Application.Validations;
 using VacationRental.Application.ViewModels;
 using VacationRental.Domain.Interfaces.Repositories;
 using VacationRental.Infra.CrossCutting.Configs.Extensions;
 
 namespace VacationRental.Application.AppServices
 {
+    ///<inheritdoc cref="IBookingAppService"/>
     public class BookingAppService : IBookingAppService
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly IRentalsRepository _rentalsRepository;
+        private readonly IValidator<BookingBindingModel> _userValidator;
 
         public BookingAppService(
             IBookingRepository bookingRepository,
-            IRentalsRepository rentalsRepository)
+            IRentalsRepository rentalsRepository,
+            IValidator<BookingBindingModel> userValidator)
         {
             this._bookingRepository = bookingRepository;
             this._rentalsRepository = rentalsRepository;
+            this._userValidator = userValidator;
         }
+
         public BookingViewModel GetById(int bookingId)
         {
             var result = _bookingRepository.GetById(bookingId);
@@ -37,8 +42,7 @@ namespace VacationRental.Application.AppServices
 
         public ResourceIdViewModel Insert(BookingBindingModel viewModel)
         {
-            // TODO: Needs refactor to validate by Dependecy Injection.
-            var validator = new BookingInsertValidator().Validate(viewModel);
+            var validator = _userValidator.Validate(viewModel);
 
             if (!validator.IsValid)
                 throw new ApplicationException(validator.GetFirstOrDefaultError());

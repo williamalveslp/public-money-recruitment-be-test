@@ -1,7 +1,7 @@
-﻿using System;
+﻿using FluentValidation;
+using System;
 using System.Collections.Generic;
 using VacationRental.Application.AppInterfaces;
-using VacationRental.Application.Validations;
 using VacationRental.Application.ViewModels;
 using VacationRental.Application.ViewModels.Calendars;
 using VacationRental.Domain.Interfaces.Repositories;
@@ -9,17 +9,21 @@ using VacationRental.Infra.CrossCutting.Configs.Extensions;
 
 namespace VacationRental.Application.AppServices
 {
+    ///<inheritdoc cref="ICalendarAppService"/>
     public class CalendarAppService : ICalendarAppService
     {
         private readonly IRentalsRepository _rentalsRepository;
         private readonly IBookingRepository _bookingRepository;
+        private readonly IValidator<CalendarGetByFilterViewModel> _calendarValidator;
 
         public CalendarAppService(
             IRentalsRepository rentalsRepository,
-            IBookingRepository bookingRepository)
+            IBookingRepository bookingRepository,
+            IValidator<CalendarGetByFilterViewModel> calendarValidator)
         {
             this._rentalsRepository = rentalsRepository;
             this._bookingRepository = bookingRepository;
+            this._calendarValidator = calendarValidator;
         }
 
         public CalendarViewModel GetByFilter(int rentalId, DateTime start, int nights)
@@ -31,8 +35,7 @@ namespace VacationRental.Application.AppServices
                 Nights = nights
             };
 
-            // TODO: Needs refactor to validate by Dependecy Injection.
-            var validator = new CalendarGetByFilterValidator().Validate(viewModel);
+            var validator = _calendarValidator.Validate(viewModel);
 
             if (!validator.IsValid)
                 throw new ApplicationException(validator.GetFirstOrDefaultError());
