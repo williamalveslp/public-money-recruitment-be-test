@@ -1,30 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.Validations;
 using VacationRental.Application.ViewModels;
+using VacationRental.Domain.Interfaces.Repositories;
 using VacationRental.Infra.CrossCutting.Configs.Extensions;
 
 namespace VacationRental.Application.AppServices
 {
     public class BookingAppService : IBookingAppService
     {
-        private readonly IDictionary<int, RentalViewModel> _rentals;
-        private readonly IDictionary<int, BookingViewModel> _bookings;
+        private readonly IBookingRepository _bookingRepository;
+        private readonly IRentalsRepository _rentalsRepository;
 
         public BookingAppService(
-            IDictionary<int, RentalViewModel> rentals,
-            IDictionary<int, BookingViewModel> bookings)
+            IBookingRepository bookingRepository,
+            IRentalsRepository rentalsRepository)
         {
-            _rentals = rentals;
-            _bookings = bookings;
+            this._bookingRepository = bookingRepository;
+            this._rentalsRepository = rentalsRepository;
         }
         public BookingViewModel GetById(int bookingId)
         {
-            if (!_bookings.ContainsKey(bookingId))
+            var result = _bookingRepository.GetById(bookingId);
+
+            if (result == null)
                 throw new ApplicationException("Booking not found");
 
-            return _bookings[bookingId];
+            return new BookingViewModel
+            {
+                Id = result.Id,
+                Nights = result.Nights,
+                RentalId = result.RentalId,
+                Start = result.Start
+            };
         }
 
         public ResourceIdViewModel Insert(BookingBindingModel viewModel)
@@ -35,9 +43,14 @@ namespace VacationRental.Application.AppServices
             if (!validator.IsValid)
                 throw new ApplicationException(validator.GetFirstOrDefaultError());
 
-            if (!_rentals.ContainsKey(viewModel.RentalId))
-                throw new ApplicationException("Rental not found");
+            var rentals = _rentalsRepository.GetAll();
 
+            if (!rentals.ContainsKey(viewModel.RentalId))            
+                throw new ApplicationException("Rental not found");            
+
+            var _bookings = _bookingRepository.GetAll();
+
+            // TODO: Validate with FluentValidator with other list / Repository.
             for (var i = 0; i < viewModel.Nights; i++)
             {
                 var count = 0;
@@ -51,20 +64,15 @@ namespace VacationRental.Application.AppServices
                         count++;
                     }
                 }
-                if (count >= _rentals[viewModel.RentalId].Units)
+                if (count >= rentals[viewModel.RentalId].Units)
                     throw new ApplicationException("Not available");
             }
 
-            var key = new ResourceIdViewModel { Id = _bookings.Keys.Count + 1 };
+            var newBookingId = _bookingRepository.GetNextId();
 
-            _bookings.Add(key.Id, new BookingViewModel
-            {
-                Id = key.Id,
-                Nights = viewModel.Nights,
-                RentalId = viewModel.RentalId,
-                Start = viewModel.Start.Date
-            });
+            _bookingRepository.Insert(newBookingId, viewModel.RentalId, viewModel.Start.Date, viewModel.Nights);
 
+            var key = new ResourceIdViewModel { Id = newBookingId };
             return key;
         }
     }

@@ -1,38 +1,41 @@
 ﻿using System;
-using System.Collections.Generic;
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.ViewModels;
+using VacationRental.Domain.Interfaces.Repositories;
 
 namespace VacationRental.Application.AppServices
 {
     public class RentalsAppService : IRentalsAppService
     {
-        private readonly IDictionary<int, RentalViewModel> _rentals;
+        private readonly IRentalsRepository _rentalsRepository;
 
-        public RentalsAppService(IDictionary<int, RentalViewModel> rentals)
+        public RentalsAppService(IRentalsRepository rentalsRepository)
         {
-            _rentals = rentals;
+            _rentalsRepository = rentalsRepository;
         }
 
         public RentalViewModel GetById(int rentalId)
         {
-            if (!_rentals.ContainsKey(rentalId))
+            var rental = _rentalsRepository.GetById(rentalId);
+
+            if (rental == null)
                 throw new ApplicationException("Rental not found");
 
-            return _rentals[rentalId];
+            return new RentalViewModel
+            {
+                Id = rental.Id,
+                Units = rental.Units
+            };
         }
 
         public ResourceIdViewModel Insert(RentalBindingModel viewModel)
         {
-            var key = new ResourceIdViewModel { Id = _rentals.Keys.Count + 1 };
+            var result = _rentalsRepository.Insert(viewModel.Units);
 
-            _rentals.Add(key.Id, new RentalViewModel
+            return new ResourceIdViewModel
             {
-                Id = key.Id,
-                Units = viewModel.Units
-            });
-
-            return key;
+                Id = result.Id
+            };
         }
     }
 }

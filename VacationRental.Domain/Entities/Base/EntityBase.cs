@@ -2,7 +2,9 @@
 {
     public abstract class EntityBase
     {
-        protected virtual int Id { get; private set; }
+        public virtual int Id { get; private set; }
+
+        protected EntityBase() { }
 
         protected EntityBase(int id)
         {

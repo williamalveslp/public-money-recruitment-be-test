@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\VacationRental.Domain\VacationRental.Domain.csproj" />
     <ProjectReference Include="..\VacationRental.Infra.CrossCutting.Configs\VacationRental.Infra.CrossCutting.Configs.csproj" />
   </ItemGroup>
 

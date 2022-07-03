@@ -7,7 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.AppServices;
 using VacationRental.Application.ViewModels;
+using VacationRental.Domain.Entities;
+using VacationRental.Domain.Interfaces.Repositories;
 using VacationRental.Infra.CrossCutting.Configs.Startup;
+using VacationRental.Infra.DataSource.Repositories;
 
 namespace VacationRental.Api
 {
@@ -41,13 +44,11 @@ namespace VacationRental.Api
             // Swagger.
             services.AddSwaggerExtension(Configuration);
            
-            services.AddSingleton<IDictionary<int, RentalViewModel>>(new Dictionary<int, RentalViewModel>());
-            services.AddSingleton<IDictionary<int, BookingViewModel>>(new Dictionary<int, BookingViewModel>());
+            services.AddSingleton<IDictionary<int, Rental>>(new Dictionary<int, Rental>());
+            services.AddSingleton<IDictionary<int, Bookings>>(new Dictionary<int, Bookings>());
+            services.AddSingleton<IDictionary<int, Calendar>>(new Dictionary<int, Calendar>());
 
-            // IoC
-            services.AddScoped<IRentalsAppService, RentalsAppService>();
-            services.AddScoped<ICalendarAppService, CalendarAppService>();
-            services.AddScoped<IBookingAppService, BookingAppService>();
+            DependencyInjections(services);
         }
 
         /// <summary>
@@ -65,6 +66,17 @@ namespace VacationRental.Api
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(opts => opts.SwaggerEndpoint("/swagger/v1/swagger.json", "VacationRental v1"));
+        }
+
+        private void DependencyInjections(IServiceCollection services)
+        {
+            services.AddScoped<IRentalsAppService, RentalsAppService>();
+            services.AddScoped<ICalendarAppService, CalendarAppService>();
+            services.AddScoped<IBookingAppService, BookingAppService>();
+
+            services.AddScoped<IRentalsRepository, RentalsRepository>();
+            services.AddScoped<ICalendarRepository, CalendarRepository>();
+            services.AddScoped<IBookingRepository, BookingRepository>();
         }
     }
 }
