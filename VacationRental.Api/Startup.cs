@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using VacationRental.Api.Models;
+using VacationRental.Application.AppInterfaces;
+using VacationRental.Application.AppServices;
+using VacationRental.Application.ViewModels;
 using VacationRental.Infra.CrossCutting.Configs.Startup;
 
 namespace VacationRental.Api
@@ -41,6 +43,11 @@ namespace VacationRental.Api
            
             services.AddSingleton<IDictionary<int, RentalViewModel>>(new Dictionary<int, RentalViewModel>());
             services.AddSingleton<IDictionary<int, BookingViewModel>>(new Dictionary<int, BookingViewModel>());
+
+            // IoC
+            services.AddScoped<IRentalsAppService, RentalsAppService>();
+            services.AddScoped<ICalendarAppService, CalendarAppService>();
+            services.AddScoped<IBookingAppService, BookingAppService>();
         }
 
         /// <summary>

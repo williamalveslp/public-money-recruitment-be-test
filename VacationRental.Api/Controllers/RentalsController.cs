@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using VacationRental.Api.Models;
+using VacationRental.Application.AppInterfaces;
+using VacationRental.Application.ViewModels;
 
 namespace VacationRental.Api.Controllers
 {
@@ -13,15 +13,15 @@ namespace VacationRental.Api.Controllers
     [ApiController]
     public class RentalsController : ControllerBase
     {
-        private readonly IDictionary<int, RentalViewModel> _rentals;
+        private readonly IRentalsAppService _rentalsApp;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="rentals"></param>
-        public RentalsController(IDictionary<int, RentalViewModel> rentals)
+        /// <param name="rentalsApp"></param>
+        public RentalsController(IRentalsAppService rentalsApp)
         {
-            _rentals = rentals;
+            this._rentalsApp = rentalsApp;
         }
 
         /// <summary>
@@ -35,30 +35,19 @@ namespace VacationRental.Api.Controllers
         [ProducesResponseType(typeof(ApplicationException), StatusCodes.Status400BadRequest)]
         public RentalViewModel Get(int rentalId)
         {
-            if (!_rentals.ContainsKey(rentalId))
-                throw new ApplicationException("Rental not found");
-
-            return _rentals[rentalId];
+            return _rentalsApp.GetById(rentalId);
         }
 
         /// <summary>
         /// Insert the Rental.
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="viewModel"></param>
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(typeof(ResourceIdViewModel), StatusCodes.Status200OK)]
-        public ResourceIdViewModel Post(RentalBindingModel model)
+        public ResourceIdViewModel Post(RentalBindingModel viewModel)
         {
-            var key = new ResourceIdViewModel { Id = _rentals.Keys.Count + 1 };
-
-            _rentals.Add(key.Id, new RentalViewModel
-            {
-                Id = key.Id,
-                Units = model.Units
-            });
-
-            return key;
+            return _rentalsApp.Insert(viewModel);
         }
     }
 }

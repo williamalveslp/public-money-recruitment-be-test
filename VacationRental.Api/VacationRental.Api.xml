@@ -9,7 +9,7 @@
             Controller for Bookings.
             </summary>
         </member>
-        <member name="M:VacationRental.Api.Controllers.BookingsController.#ctor(System.Collections.Generic.IDictionary{System.Int32,VacationRental.Api.Models.RentalViewModel},System.Collections.Generic.IDictionary{System.Int32,VacationRental.Api.Models.BookingViewModel})">
+        <member name="M:VacationRental.Api.Controllers.BookingsController.#ctor(System.Collections.Generic.IDictionary{System.Int32,VacationRental.Application.ViewModels.RentalViewModel},System.Collections.Generic.IDictionary{System.Int32,VacationRental.Application.ViewModels.BookingViewModel})">
             <summary>
             Constructor.
             </summary>
@@ -23,7 +23,7 @@
             <param name="bookingId">Booking Id.</param>
             <returns></returns>
         </member>
-        <member name="M:VacationRental.Api.Controllers.BookingsController.Post(VacationRental.Api.Models.BookingBindingModel)">
+        <member name="M:VacationRental.Api.Controllers.BookingsController.Post(VacationRental.Application.ViewModels.BookingBindingModel)">
             <summary>
             Insert the Booking.
             </summary>
@@ -35,7 +35,7 @@
             Controller for Calendar.
             </summary>
         </member>
-        <member name="M:VacationRental.Api.Controllers.CalendarController.#ctor(System.Collections.Generic.IDictionary{System.Int32,VacationRental.Api.Models.RentalViewModel},System.Collections.Generic.IDictionary{System.Int32,VacationRental.Api.Models.BookingViewModel})">
+        <member name="M:VacationRental.Api.Controllers.CalendarController.#ctor(System.Collections.Generic.IDictionary{System.Int32,VacationRental.Application.ViewModels.RentalViewModel},System.Collections.Generic.IDictionary{System.Int32,VacationRental.Application.ViewModels.BookingViewModel})">
             <summary>
             Constructor.
             </summary>
@@ -56,7 +56,7 @@
             Controller for Rentals.
             </summary>
         </member>
-        <member name="M:VacationRental.Api.Controllers.RentalsController.#ctor(System.Collections.Generic.IDictionary{System.Int32,VacationRental.Api.Models.RentalViewModel})">
+        <member name="M:VacationRental.Api.Controllers.RentalsController.#ctor(System.Collections.Generic.IDictionary{System.Int32,VacationRental.Application.ViewModels.RentalViewModel})">
             <summary>
             Constructor.
             </summary>
@@ -69,7 +69,7 @@
             <param name="rentalId"></param>
             <returns></returns>
         </member>
-        <member name="M:VacationRental.Api.Controllers.RentalsController.Post(VacationRental.Api.Models.RentalBindingModel)">
+        <member name="M:VacationRental.Api.Controllers.RentalsController.Post(VacationRental.Application.ViewModels.RentalBindingModel)">
             <summary>
             Insert the Rental.
             </summary>

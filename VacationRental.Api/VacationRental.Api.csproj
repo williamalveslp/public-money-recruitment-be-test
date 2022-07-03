@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\VacationRental.Application\VacationRental.Application.csproj" />
     <ProjectReference Include="..\VacationRental.Infra.CrossCutting.Configs\VacationRental.Infra.CrossCutting.Configs.csproj" />
   </ItemGroup>
 
