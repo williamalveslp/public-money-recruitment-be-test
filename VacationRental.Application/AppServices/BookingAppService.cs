@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using VacationRental.Application.AppInterfaces;
+using VacationRental.Application.Validations;
 using VacationRental.Application.ViewModels;
+using VacationRental.Infra.CrossCutting.Configs.Extensions;
 
 namespace VacationRental.Application.AppServices
 {
@@ -27,8 +29,11 @@ namespace VacationRental.Application.AppServices
 
         public ResourceIdViewModel Insert(BookingBindingModel viewModel)
         {
-            if (viewModel.Nights <= 0)
-                throw new ApplicationException("Nigts must be positive");
+            // TODO: Needs refactor to validate by Dependecy Injection.
+            var validator = new BookingInsertValidator().Validate(viewModel);
+
+            if (!validator.IsValid)
+                throw new ApplicationException(validator.GetFirstOrDefaultError());
 
             if (!_rentals.ContainsKey(viewModel.RentalId))
                 throw new ApplicationException("Rental not found");

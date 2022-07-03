@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using VacationRental.Application.AppInterfaces;
+using VacationRental.Application.Validations;
 using VacationRental.Application.ViewModels;
+using VacationRental.Application.ViewModels.Calendars;
+using VacationRental.Infra.CrossCutting.Configs.Extensions;
 
 namespace VacationRental.Application.AppServices
 {
@@ -20,8 +23,19 @@ namespace VacationRental.Application.AppServices
 
         public CalendarViewModel GetByFilter(int rentalId, DateTime start, int nights)
         {
-            if (nights < 0)
-                throw new ApplicationException("Nights must be positive");
+            var viewModel = new CalendarGetByFilterViewModel
+            {
+                RentalId = rentalId,
+                Start = start,
+                Nights = nights
+            };
+
+            // TODO: Needs refactor to validate by Dependecy Injection.
+            var validator = new CalendarGetByFilterValidator().Validate(viewModel);
+
+            if (!validator.IsValid)
+                throw new ApplicationException(validator.GetFirstOrDefaultError());
+
             if (!_rentals.ContainsKey(rentalId))
                 throw new ApplicationException("Rental not found");
 

@@ -5,7 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Validations\" />
+    <PackageReference Include="FluentValidation" Version="11.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VacationRental.Infra.CrossCutting.Configs\VacationRental.Infra.CrossCutting.Configs.csproj" />
   </ItemGroup>
 
 </Project>
