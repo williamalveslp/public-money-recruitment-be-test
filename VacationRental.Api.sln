@@ -7,6 +7,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VacationRental.Api", "Vacat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VacationRental.Api.Tests", "VacationRental.Api.Tests\VacationRental.Api.Tests.csproj", "{57FE6E13-7144-459F-BCA8-431087D3DAEE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0 - Presentation", "0 - Presentation", "{06B0DB17-4A31-4DE8-833A-21089A08465B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - Application", "1 - Application", "{CF85E61F-15C5-42A9-8EC0-5540427BB2C1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - Domain", "2 - Domain", "{7B00A0C8-4A8D-42C3-A363-5D42F1CE5D2E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Infra", "3 - Infra", "{792B6914-3928-46AE-8566-F9F9D92839F9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4 - Tests", "4 - Tests", "{B19F465B-CBBC-4408-A88C-59B887D789B5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.1 - CrossCutting", "3.1 - CrossCutting", "{FF777DE3-1A87-4782-A9D0-1FCE5BE5B087}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VacationRental.Infra.CrossCutting.Configs", "VacationRental.Infra.CrossCutting.Configs\VacationRental.Infra.CrossCutting.Configs.csproj", "{BC87C6A8-C0A1-46D8-B9EA-7AD1D434892E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,9 +35,19 @@ Global
 		{57FE6E13-7144-459F-BCA8-431087D3DAEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57FE6E13-7144-459F-BCA8-431087D3DAEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57FE6E13-7144-459F-BCA8-431087D3DAEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC87C6A8-C0A1-46D8-B9EA-7AD1D434892E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC87C6A8-C0A1-46D8-B9EA-7AD1D434892E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC87C6A8-C0A1-46D8-B9EA-7AD1D434892E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC87C6A8-C0A1-46D8-B9EA-7AD1D434892E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{478C6CBF-6F84-4604-8E31-DEDFDFE10DBC} = {06B0DB17-4A31-4DE8-833A-21089A08465B}
+		{57FE6E13-7144-459F-BCA8-431087D3DAEE} = {B19F465B-CBBC-4408-A88C-59B887D789B5}
+		{FF777DE3-1A87-4782-A9D0-1FCE5BE5B087} = {792B6914-3928-46AE-8566-F9F9D92839F9}
+		{BC87C6A8-C0A1-46D8-B9EA-7AD1D434892E} = {FF777DE3-1A87-4782-A9D0-1FCE5BE5B087}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6A5319C5-4F21-41BF-B8A7-BC45868FEC89}

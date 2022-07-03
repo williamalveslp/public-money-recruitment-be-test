@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VacationRental.Api.Models;
 
 namespace VacationRental.Api.Controllers
 {
+    /// <summary>
+    /// Controller for Calendar.
+    /// </summary>
     [Route("api/v1/calendar")]
     [ApiController]
     public class CalendarController : ControllerBase
@@ -12,6 +16,11 @@ namespace VacationRental.Api.Controllers
         private readonly IDictionary<int, RentalViewModel> _rentals;
         private readonly IDictionary<int, BookingViewModel> _bookings;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="rentals"></param>
+        /// <param name="bookings"></param>
         public CalendarController(
             IDictionary<int, RentalViewModel> rentals,
             IDictionary<int, BookingViewModel> bookings)
@@ -20,7 +29,16 @@ namespace VacationRental.Api.Controllers
             _bookings = bookings;
         }
 
+        /// <summary>
+        /// Get calendar by filter.
+        /// </summary>
+        /// <param name="rentalId"></param>
+        /// <param name="start"></param>
+        /// <param name="nights"></param>
+        /// <returns></returns>
         [HttpGet]
+        [ProducesResponseType(typeof(CalendarViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApplicationException), StatusCodes.Status400BadRequest)]
         public CalendarViewModel Get(int rentalId, DateTime start, int nights)
         {
             if (nights < 0)

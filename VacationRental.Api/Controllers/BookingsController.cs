@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VacationRental.Api.Models;
 
 namespace VacationRental.Api.Controllers
 {
+    /// <summary>
+    /// Controller for Bookings.
+    /// </summary>
     [Route("api/v1/bookings")]
     [ApiController]
     public class BookingsController : ControllerBase
@@ -12,6 +16,11 @@ namespace VacationRental.Api.Controllers
         private readonly IDictionary<int, RentalViewModel> _rentals;
         private readonly IDictionary<int, BookingViewModel> _bookings;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="rentals"></param>
+        /// <param name="bookings"></param>
         public BookingsController(
             IDictionary<int, RentalViewModel> rentals,
             IDictionary<int, BookingViewModel> bookings)
@@ -20,8 +29,15 @@ namespace VacationRental.Api.Controllers
             _bookings = bookings;
         }
 
+        /// <summary>
+        /// Get the Booking by Id.
+        /// </summary>
+        /// <param name="bookingId">Booking Id.</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{bookingId:int}")]
+        [ProducesResponseType(typeof(BookingViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApplicationException), StatusCodes.Status400BadRequest)]
         public BookingViewModel Get(int bookingId)
         {
             if (!_bookings.ContainsKey(bookingId))
@@ -30,11 +46,19 @@ namespace VacationRental.Api.Controllers
             return _bookings[bookingId];
         }
 
+        /// <summary>
+        /// Insert the Booking.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
+        [ProducesResponseType(typeof(ResourceIdViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApplicationException), StatusCodes.Status400BadRequest)]
         public ResourceIdViewModel Post(BookingBindingModel model)
         {
             if (model.Nights <= 0)
                 throw new ApplicationException("Nigts must be positive");
+
             if (!_rentals.ContainsKey(model.RentalId))
                 throw new ApplicationException("Rental not found");
 
@@ -54,7 +78,6 @@ namespace VacationRental.Api.Controllers
                 if (count >= _rentals[model.RentalId].Units)
                     throw new ApplicationException("Not available");
             }
-
 
             var key = new ResourceIdViewModel { Id = _bookings.Keys.Count + 1 };
 
