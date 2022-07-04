@@ -1,12 +1,13 @@
 ﻿using System;
 
-namespace VacationRental.Api.Models
+namespace VacationRental.Application.ViewModels.Calendars
 {
-    public class BookingViewModel
+    public class CalendarGetByFilterViewModel
     {
-        public int Id { get; set; }
         public int RentalId { get; set; }
+
         public DateTime Start { get; set; }
+
         public int Nights { get; set; }
     }
 }

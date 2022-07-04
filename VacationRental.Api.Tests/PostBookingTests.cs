@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using VacationRental.Api.Models;
+using VacationRental.Application.ViewModels;
 using Xunit;
 
 namespace VacationRental.Api.Tests
@@ -32,11 +31,13 @@ namespace VacationRental.Api.Tests
                 postRentalResult = await postRentalResponse.Content.ReadAsAsync<ResourceIdViewModel>();
             }
 
+            var currentDateTime = DateTime.Now;
+
             var postBookingRequest = new BookingBindingModel
             {
-                 RentalId = postRentalResult.Id,
-                 Nights = 3,
-                 Start = new DateTime(2001, 01, 01)
+                RentalId = postRentalResult.Id,
+                Nights = 3,
+                Start = new DateTime(currentDateTime.Year, currentDateTime.Month, currentDateTime.Day)
             };
 
             ResourceIdViewModel postBookingResult;
@@ -72,11 +73,13 @@ namespace VacationRental.Api.Tests
                 postRentalResult = await postRentalResponse.Content.ReadAsAsync<ResourceIdViewModel>();
             }
 
+            var currentDateTime = DateTime.Now;
+
             var postBooking1Request = new BookingBindingModel
             {
                 RentalId = postRentalResult.Id,
                 Nights = 3,
-                Start = new DateTime(2002, 01, 01)
+                Start = new DateTime(currentDateTime.Year, currentDateTime.Month, currentDateTime.Day).AddYears(1)
             };
 
             using (var postBooking1Response = await _client.PostAsJsonAsync($"/api/v1/bookings", postBooking1Request))
@@ -88,15 +91,20 @@ namespace VacationRental.Api.Tests
             {
                 RentalId = postRentalResult.Id,
                 Nights = 1,
-                Start = new DateTime(2002, 01, 02)
+                Start = new DateTime(currentDateTime.Year, currentDateTime.Month, currentDateTime.Day).AddYears(1).AddDays(1)
             };
 
-            await Assert.ThrowsAsync<ApplicationException>(async () =>
+            ApplicationException postResult;
+            using (var postBookingResponse = await _client.PostAsJsonAsync($"/api/v1/bookings", postBooking2Request))
             {
-                using (var postBooking2Response = await _client.PostAsJsonAsync($"/api/v1/bookings", postBooking2Request))
-                {
-                }
-            });
+                Assert.False(postBookingResponse.IsSuccessStatusCode);
+                postResult = await postBookingResponse.Content.ReadAsAsync<ApplicationException>();
+
+                Assert.NotNull(postResult);
+                Assert.NotNull(postResult.Message);
+
+                Assert.Equal("Not available", postResult.Message, ignoreCase: true);
+            }
         }
     }
 }

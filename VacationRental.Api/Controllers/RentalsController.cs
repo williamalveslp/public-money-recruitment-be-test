@@ -1,43 +1,60 @@
 ﻿using System;
-using System.Collections.Generic;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using VacationRental.Api.Models;
+using VacationRental.Api.Controllers.Base;
+using VacationRental.Application.AppInterfaces;
+using VacationRental.Application.ViewModels;
+using VacationRental.Domain.Core.Notifications;
 
 namespace VacationRental.Api.Controllers
 {
+    /// <summary>
+    /// Controller for Rentals.
+    /// </summary>
     [Route("api/v1/rentals")]
     [ApiController]
-    public class RentalsController : ControllerBase
+    public class RentalsController : ApiBaseController
     {
-        private readonly IDictionary<int, RentalViewModel> _rentals;
+        private readonly IRentalsAppService _rentalsApp;
 
-        public RentalsController(IDictionary<int, RentalViewModel> rentals)
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="notifications"></param>
+        /// <param name="rentalsApp"></param>
+        public RentalsController(
+            INotificationHandler<DomainNotification> notifications,
+            IRentalsAppService rentalsApp) : base(notifications)
         {
-            _rentals = rentals;
+            this._rentalsApp = rentalsApp;
         }
 
+        /// <summary>
+        /// Get Rental by Id.
+        /// </summary>
+        /// <param name="rentalId"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{rentalId:int}")]
-        public RentalViewModel Get(int rentalId)
+        [ProducesResponseType(typeof(RentalViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApplicationException), StatusCodes.Status500InternalServerError)]
+        public ActionResult<RentalViewModel> Get(int rentalId)
         {
-            if (!_rentals.ContainsKey(rentalId))
-                throw new ApplicationException("Rental not found");
-
-            return _rentals[rentalId];
+            return Response(_rentalsApp.GetById(rentalId));
         }
 
+        /// <summary>
+        /// Insert the Rental.
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         [HttpPost]
-        public ResourceIdViewModel Post(RentalBindingModel model)
+        [ProducesResponseType(typeof(ResourceIdViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResourceIdViewModel), StatusCodes.Status500InternalServerError)]
+        public ActionResult<ResourceIdViewModel> Post(RentalBindingModel viewModel)
         {
-            var key = new ResourceIdViewModel { Id = _rentals.Keys.Count + 1 };
-
-            _rentals.Add(key.Id, new RentalViewModel
-            {
-                Id = key.Id,
-                Units = model.Units
-            });
-
-            return key;
+            return Response(_rentalsApp.Insert(viewModel));
         }
     }
 }
