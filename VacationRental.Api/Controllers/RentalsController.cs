@@ -1,8 +1,11 @@
 ﻿using System;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using VacationRental.Api.Controllers.Base;
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.ViewModels;
+using VacationRental.Domain.Core.Notifications;
 
 namespace VacationRental.Api.Controllers
 {
@@ -11,15 +14,18 @@ namespace VacationRental.Api.Controllers
     /// </summary>
     [Route("api/v1/rentals")]
     [ApiController]
-    public class RentalsController : ControllerBase
+    public class RentalsController : ApiBaseController
     {
         private readonly IRentalsAppService _rentalsApp;
 
         /// <summary>
         /// Constructor.
         /// </summary>
+        /// <param name="notifications"></param>
         /// <param name="rentalsApp"></param>
-        public RentalsController(IRentalsAppService rentalsApp)
+        public RentalsController(
+            INotificationHandler<DomainNotification> notifications,
+            IRentalsAppService rentalsApp) : base(notifications)
         {
             this._rentalsApp = rentalsApp;
         }
@@ -35,7 +41,7 @@ namespace VacationRental.Api.Controllers
         [ProducesResponseType(typeof(ApplicationException), StatusCodes.Status500InternalServerError)]
         public ActionResult<RentalViewModel> Get(int rentalId)
         {
-            return _rentalsApp.GetById(rentalId);
+            return Response(_rentalsApp.GetById(rentalId));
         }
 
         /// <summary>
@@ -48,7 +54,7 @@ namespace VacationRental.Api.Controllers
         [ProducesResponseType(typeof(ResourceIdViewModel), StatusCodes.Status500InternalServerError)]
         public ActionResult<ResourceIdViewModel> Post(RentalBindingModel viewModel)
         {
-            return _rentalsApp.Insert(viewModel);
+            return Response(_rentalsApp.Insert(viewModel));
         }
     }
 }

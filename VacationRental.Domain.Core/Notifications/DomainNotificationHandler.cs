@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace VacationRental.Domain.Core.Notifications
 {
@@ -23,9 +25,11 @@ namespace VacationRental.Domain.Core.Notifications
             return GetNotifications().Any();
         }
 
-        public void Handle(DomainNotification notification)
+        public Task Handle(DomainNotification notification, CancellationToken cancellationToken)
         {
             _notifications.Add(notification);
+
+            return Task.CompletedTask;
         }
 
         public void Dispose()

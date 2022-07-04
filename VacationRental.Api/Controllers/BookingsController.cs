@@ -1,8 +1,11 @@
 ﻿using System;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using VacationRental.Api.Controllers.Base;
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.ViewModels;
+using VacationRental.Domain.Core.Notifications;
 
 namespace VacationRental.Api.Controllers
 {
@@ -11,16 +14,18 @@ namespace VacationRental.Api.Controllers
     /// </summary>
     [Route("api/v1/bookings")]
     [ApiController]
-    public class BookingsController : ControllerBase
+    public class BookingsController : ApiBaseController
     {
         private readonly IBookingAppService _bookingApp;
 
         /// <summary>
         /// Constructor.
         /// </summary>
+        /// <param name="notifications"></param>
         /// <param name="bookingApp"></param>
         public BookingsController(
-            IBookingAppService bookingApp)
+            INotificationHandler<DomainNotification> notifications,
+            IBookingAppService bookingApp) : base(notifications)
         {
             _bookingApp = bookingApp;
         }
@@ -36,7 +41,7 @@ namespace VacationRental.Api.Controllers
         [ProducesResponseType(typeof(ApplicationException), StatusCodes.Status500InternalServerError)]
         public ActionResult<BookingViewModel> Get(int bookingId)
         {
-            return _bookingApp.GetById(bookingId);
+            return Response(_bookingApp.GetById(bookingId));
         }
 
         /// <summary>
@@ -49,7 +54,7 @@ namespace VacationRental.Api.Controllers
         [ProducesResponseType(typeof(ApplicationException), StatusCodes.Status500InternalServerError)]
         public ActionResult<ResourceIdViewModel> Post(BookingBindingModel viewModel)
         {
-            return _bookingApp.Insert(viewModel);
+            return Response(_bookingApp.Insert(viewModel));
         }
     }
 }

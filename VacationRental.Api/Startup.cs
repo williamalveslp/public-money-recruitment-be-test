@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using FluentValidation;
 using MediatR;
@@ -11,8 +12,11 @@ using VacationRental.Api.Middlewares;
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.AppServices;
 using VacationRental.Application.Validations;
+using VacationRental.Domain.Core.Bus;
+using VacationRental.Domain.Core.Notifications;
 using VacationRental.Domain.Entities;
 using VacationRental.Domain.Interfaces.Repositories;
+using VacationRental.Infra.CrossCutting.Bus;
 using VacationRental.Infra.CrossCutting.Configs.Startup;
 using VacationRental.Infra.DataSource.Repositories;
 
@@ -47,7 +51,7 @@ namespace VacationRental.Api
 
             // Swagger.
             services.AddSwaggerExtension(Configuration);
-           
+
             // Storaged
             services.AddSingleton<IDictionary<int, Rental>>(new Dictionary<int, Rental>());
             services.AddSingleton<IDictionary<int, Bookings>>(new Dictionary<int, Bookings>());
@@ -57,8 +61,15 @@ namespace VacationRental.Api
             services.AddValidatorsFromAssemblyContaining<BookingInsertValidator>();
             services.AddValidatorsFromAssemblyContaining<CalendarGetByFilterValidator>();
 
-            // Mediator.
+            // Mediator - MediatR.Extensions.Microsoft.DependencyInjection Version=9.0.0.0.
             services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
+            services.AddMediatR(Assembly.GetExecutingAssembly());
+
+            // Infra - Bus
+            services.AddScoped<IMediatorHandlerNormalize, InMemoryBusNormalize>();
+
+            // Domain - Events
+            services.AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>();
 
             DependencyInjectionsLayers(services);
         }
@@ -73,7 +84,7 @@ namespace VacationRental.Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }       
+            }
 
             app.UseSwagger();
             app.UseSwaggerUI(opts => opts.SwaggerEndpoint("/swagger/v1/swagger.json", "VacationRental v1"));

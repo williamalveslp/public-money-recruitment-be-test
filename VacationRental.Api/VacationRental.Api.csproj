@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.1.0" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="2.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
@@ -20,7 +20,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VacationRental.Application\VacationRental.Application.csproj" />
+    <ProjectReference Include="..\VacationRental.Domain.Core\VacationRental.Domain.Core.csproj" />
     <ProjectReference Include="..\VacationRental.Domain\VacationRental.Domain.csproj" />
+    <ProjectReference Include="..\VacationRental.Infra.CrossCutting.Bus\VacationRental.Infra.CrossCutting.Bus.csproj" />
     <ProjectReference Include="..\VacationRental.Infra.CrossCutting.Configs\VacationRental.Infra.CrossCutting.Configs.csproj" />
     <ProjectReference Include="..\VacationRental.Infra.DataSource\VacationRental.Infra.DataSource.csproj" />
   </ItemGroup>

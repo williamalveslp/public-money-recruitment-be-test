@@ -1,8 +1,11 @@
 ﻿using System;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using VacationRental.Api.Controllers.Base;
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.ViewModels;
+using VacationRental.Domain.Core.Notifications;
 
 namespace VacationRental.Api.Controllers
 {
@@ -11,7 +14,7 @@ namespace VacationRental.Api.Controllers
     /// </summary>
     [Route("api/v1/calendar")]
     [ApiController]
-    public class CalendarController : ControllerBase
+    public class CalendarController : ApiBaseController
     {
         private readonly ICalendarAppService _calendarApp;
 
@@ -19,8 +22,10 @@ namespace VacationRental.Api.Controllers
         /// Constructor.
         /// </summary>
         /// <param name="calendarApp"></param>
+        /// <param name="notifications"></param>
         public CalendarController(
-            ICalendarAppService calendarApp)
+            INotificationHandler<DomainNotification> notifications,
+            ICalendarAppService calendarApp) : base(notifications)
         {
             this._calendarApp = calendarApp;
         }
@@ -37,7 +42,7 @@ namespace VacationRental.Api.Controllers
         [ProducesResponseType(typeof(ApplicationException), StatusCodes.Status500InternalServerError)]
         public ActionResult<CalendarViewModel> Get(int rentalId, DateTime start, int nights)
         {
-            return _calendarApp.GetByFilter(rentalId, start, nights);
+            return Response(_calendarApp.GetByFilter(rentalId, start, nights));
         }
     }
 }

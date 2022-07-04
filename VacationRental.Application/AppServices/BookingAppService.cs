@@ -1,14 +1,17 @@
 ﻿using FluentValidation;
-using System;
+using MediatR;
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.ViewModels;
+using VacationRental.Domain.CommandHandlers;
+using VacationRental.Domain.Core.Bus;
+using VacationRental.Domain.Core.Notifications;
 using VacationRental.Domain.Interfaces.Repositories;
 using VacationRental.Infra.CrossCutting.Configs.Extensions;
 
 namespace VacationRental.Application.AppServices
 {
     ///<inheritdoc cref="IBookingAppService"/>
-    public class BookingAppService : IBookingAppService
+    public class BookingAppService : CommandHandler, IBookingAppService
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly IRentalsRepository _rentalsRepository;
@@ -17,7 +20,9 @@ namespace VacationRental.Application.AppServices
         public BookingAppService(
             IBookingRepository bookingRepository,
             IRentalsRepository rentalsRepository,
-            IValidator<BookingBindingModel> userValidator)
+            IValidator<BookingBindingModel> userValidator,
+            IMediatorHandlerNormalize bus,
+            INotificationHandler<DomainNotification> notifications) : base(bus, notifications)
         {
             this._bookingRepository = bookingRepository;
             this._rentalsRepository = rentalsRepository;
@@ -29,7 +34,10 @@ namespace VacationRental.Application.AppServices
             var result = _bookingRepository.GetById(bookingId);
 
             if (result == null)
-                throw new ApplicationException("Booking not found");
+            {
+                NotifyValidationErrors("Booking not found");
+                return default;
+            }
 
             return new BookingViewModel
             {
@@ -45,16 +53,21 @@ namespace VacationRental.Application.AppServices
             var validator = _userValidator.Validate(viewModel);
 
             if (!validator.IsValid)
-                throw new ApplicationException(validator.GetErrors());
+            {
+                NotifyValidationErrors(validator.GetErrors());
+                return default;
+            }
 
             var rentals = _rentalsRepository.GetAll();
 
             if (!rentals.ContainsKey(viewModel.RentalId))
-                throw new ApplicationException("Rental not found");
+            {
+                NotifyValidationErrors("Rental not found");
+                return default;
+            }
 
             var bookings = _bookingRepository.GetAll();
 
-            // TODO: Validate with FluentValidator with other list / Repository.
             for (var i = 0; i < viewModel.Nights; i++)
             {
                 var count = 0;
@@ -70,7 +83,10 @@ namespace VacationRental.Application.AppServices
                     }
                 }
                 if (count >= rentals[viewModel.RentalId].Units)
-                    throw new ApplicationException("Not available");
+                {
+                    NotifyValidationErrors("Not available");
+                    return default;
+                }
             }
 
             var newBookingId = _bookingRepository.GetNextId();

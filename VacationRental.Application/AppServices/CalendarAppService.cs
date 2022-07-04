@@ -1,16 +1,20 @@
 ﻿using FluentValidation;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.ViewModels;
 using VacationRental.Application.ViewModels.Calendars;
+using VacationRental.Domain.CommandHandlers;
+using VacationRental.Domain.Core.Bus;
+using VacationRental.Domain.Core.Notifications;
 using VacationRental.Domain.Interfaces.Repositories;
 using VacationRental.Infra.CrossCutting.Configs.Extensions;
 
 namespace VacationRental.Application.AppServices
 {
     ///<inheritdoc cref="ICalendarAppService"/>
-    public class CalendarAppService : ICalendarAppService
+    public class CalendarAppService : CommandHandler, ICalendarAppService
     {
         private readonly IRentalsRepository _rentalsRepository;
         private readonly IBookingRepository _bookingRepository;
@@ -19,7 +23,9 @@ namespace VacationRental.Application.AppServices
         public CalendarAppService(
             IRentalsRepository rentalsRepository,
             IBookingRepository bookingRepository,
-            IValidator<CalendarGetByFilterViewModel> calendarValidator)
+            IValidator<CalendarGetByFilterViewModel> calendarValidator,
+            IMediatorHandlerNormalize bus,
+            INotificationHandler<DomainNotification> notifications) : base(bus, notifications)
         {
             this._rentalsRepository = rentalsRepository;
             this._bookingRepository = bookingRepository;
@@ -38,12 +44,18 @@ namespace VacationRental.Application.AppServices
             var validator = _calendarValidator.Validate(viewModel);
 
             if (!validator.IsValid)
-                throw new ApplicationException(validator.GetErrors());
+            {
+                NotifyValidationErrors(validator.GetErrors());
+                return default;
+            }
 
             var rentals = _rentalsRepository.GetAll();
 
             if (!rentals.ContainsKey(rentalId))
-                throw new ApplicationException("Rental not found");
+            {
+                NotifyValidationErrors("Rental not found");
+                return default;
+            }
 
             var bookings = _bookingRepository.GetAll();
 
