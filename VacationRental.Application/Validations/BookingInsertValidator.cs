@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using System;
 using VacationRental.Application.ViewModels;
 
 namespace VacationRental.Application.Validations
@@ -17,8 +18,20 @@ namespace VacationRental.Application.Validations
 
             RuleFor(f => f.Nights)
               .GreaterThan(0)
-              .WithMessage("Nigts must be positive")
+              .WithMessage("Nights must be positive")
               .WithErrorCode($"{CODE}-002")
+              .WithSeverity(Severity.Error);
+
+            RuleFor(f => f.RentalId)
+              .GreaterThan(0)
+              .WithMessage("RentalId must be positive")
+              .WithErrorCode($"{CODE}-003")
+              .WithSeverity(Severity.Error);
+
+            RuleFor(f => f.Start)
+              .Must(f => f.Date >= DateTime.Now.Date)
+              .WithMessage("The start date must be bigger than today.")
+              .WithErrorCode($"{CODE}-004")
               .WithSeverity(Severity.Error);
         }
     }

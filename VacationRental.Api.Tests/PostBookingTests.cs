@@ -31,11 +31,13 @@ namespace VacationRental.Api.Tests
                 postRentalResult = await postRentalResponse.Content.ReadAsAsync<ResourceIdViewModel>();
             }
 
+            var currentDateTime = DateTime.Now;
+
             var postBookingRequest = new BookingBindingModel
             {
                 RentalId = postRentalResult.Id,
                 Nights = 3,
-                Start = new DateTime(2001, 01, 01)
+                Start = new DateTime(currentDateTime.Year, currentDateTime.Month, currentDateTime.Day)
             };
 
             ResourceIdViewModel postBookingResult;
@@ -71,11 +73,13 @@ namespace VacationRental.Api.Tests
                 postRentalResult = await postRentalResponse.Content.ReadAsAsync<ResourceIdViewModel>();
             }
 
+            var currentDateTime = DateTime.Now;
+
             var postBooking1Request = new BookingBindingModel
             {
                 RentalId = postRentalResult.Id,
                 Nights = 3,
-                Start = new DateTime(2002, 01, 01)
+                Start = new DateTime(currentDateTime.Year, currentDateTime.Month, currentDateTime.Day).AddYears(1)
             };
 
             using (var postBooking1Response = await _client.PostAsJsonAsync($"/api/v1/bookings", postBooking1Request))
@@ -87,7 +91,7 @@ namespace VacationRental.Api.Tests
             {
                 RentalId = postRentalResult.Id,
                 Nights = 1,
-                Start = new DateTime(2002, 01, 02)
+                Start = new DateTime(currentDateTime.Year, currentDateTime.Month, currentDateTime.Day).AddYears(1).AddDays(1)
             };
 
             ApplicationException postResult;

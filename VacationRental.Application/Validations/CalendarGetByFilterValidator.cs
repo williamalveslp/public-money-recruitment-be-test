@@ -20,6 +20,12 @@ namespace VacationRental.Application.Validations
               .WithMessage("Nights must be positive")
               .WithErrorCode($"{CODE}-002")
               .WithSeverity(Severity.Error);
+
+            RuleFor(f => f.RentalId)
+              .GreaterThan(0)
+              .WithMessage("RentalId must be positive")
+              .WithErrorCode($"{CODE}-003")
+              .WithSeverity(Severity.Error);
         }
     }
 }
