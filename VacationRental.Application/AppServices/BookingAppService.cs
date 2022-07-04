@@ -45,7 +45,7 @@ namespace VacationRental.Application.AppServices
             var validator = _userValidator.Validate(viewModel);
 
             if (!validator.IsValid)
-                throw new ApplicationException(validator.GetFirstOrDefaultError());
+                throw new ApplicationException(validator.GetErrors());
 
             var rentals = _rentalsRepository.GetAll();
 
