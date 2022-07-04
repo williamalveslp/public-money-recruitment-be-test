@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using System.IO;
@@ -12,26 +11,20 @@ namespace VacationRental.Infra.CrossCutting.Configs.Startup
     {
         public static void AddSwaggerExtension(this IServiceCollection services, IConfiguration configuration)
         {
-            var swaggerData = ConfigurationTransfer.GetObject<SwaggerSettings>(configuration);
-            var serviceCollectionData = swaggerData?.ServiceCollection;
-
             _ = services.AddSwaggerGen(c =>
             {
                 c.EnableAnnotations();
-
-                c.SwaggerDoc(swaggerData.ServiceCollection.Version,
-                    new Info
-                    {
-                        Title = serviceCollectionData?.Title,
-                        Version = serviceCollectionData?.Version,
-                        Description = serviceCollectionData?.Description,
-                        Contact = new Contact
+                c.SwaggerDoc("v1",
+                        new Info
                         {
-                            Name = serviceCollectionData?.Contact?.Name,
-                            Email = serviceCollectionData?.Contact?.Email,
-                            Url = serviceCollectionData?.Contact?.Url
-                        }
-                    });
+                            Title = "Vacation rental information",
+                            Version = "v1",
+                            Contact = new Contact
+                            {
+                                Name = "William Goi",
+                                Email = "williamalveslp@hotmail.com"
+                            }
+                        });
 
                 var rootFullDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
@@ -46,55 +39,6 @@ namespace VacationRental.Infra.CrossCutting.Configs.Startup
 
                 c.IncludeXmlComments(xmlPath);
             });
-        }
-
-        public static void UseSwaggerExtension(this IApplicationBuilder app, IConfiguration configuration)
-        {
-            var swaggerData = ConfigurationTransfer.GetObject<SwaggerSettings>(configuration);
-            var serviceCollectionData = swaggerData?.ServiceCollection;
-            var appBuilderData = swaggerData?.AppBuilder;
-
-            string title = serviceCollectionData?.Title;
-            string version = serviceCollectionData?.Version;
-
-            string urlRouteSwagger = appBuilderData?.UrlSwagger;
-            urlRouteSwagger = string.Format(urlRouteSwagger, version);
-
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                // Example: "/swagger/{0}/swagger.json".
-                c.SwaggerEndpoint(urlRouteSwagger, title);
-            });
-        }
-    }
-
-    internal class SwaggerSettings
-    {
-        public AppBuilderDto AppBuilder { get; set; }
-        public ServiceCollectionDto ServiceCollection { get; set; }
-
-        public class ServiceCollectionDto
-        {
-            public string Title { get; set; }
-
-            public string Version { get; set; }
-
-            public string Description { get; set; }
-
-            public ContactDto Contact { get; set; }
-
-            public class ContactDto
-            {
-                public string Name { get; set; }
-                public string Email { get; set; }
-                public string Url { get; set; }
-            }
-        }
-
-        public class AppBuilderDto
-        {
-            public string UrlSwagger { get; set; }
         }
     }
 }
