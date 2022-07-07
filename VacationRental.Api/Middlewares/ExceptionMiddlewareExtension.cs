@@ -27,18 +27,18 @@ namespace VacationRental.Api.Middlewares
 
                     var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
 
-                    if (contextFeature != null)
-                    {
-                        // TODO: Use can logger the error using the "contextFeature.Error".
+                    if (contextFeature == null)
+                        return;
 
-                        // The object that contains information about the response.
-                        var errorDetails = new ApplicationException(contextFeature.Error?.Message);
+                    // TODO: Use can logger the error using the "contextFeature.Error".
 
-                        var jsonObject = JsonConvert.SerializeObject(errorDetails);
+                    // The object that contains information about the response.
+                    var errorDetails = new ApplicationException(contextFeature.Error?.Message);
 
-                        // Microsoft.AspNetCore.Http.Abstractions
-                        await context.Response.WriteAsync(jsonObject);
-                    }
+                    var jsonObject = JsonConvert.SerializeObject(errorDetails);
+
+                    // Microsoft.AspNetCore.Http.Abstractions
+                    await context.Response.WriteAsync(jsonObject);
                 });
             });
         }
