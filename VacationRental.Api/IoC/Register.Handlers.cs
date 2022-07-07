@@ -19,8 +19,11 @@ namespace VacationRental.Api.IoC
         public static void AddHandlers(this IServiceCollection services)
         {
             // Mediator - MediatR.Extensions.Microsoft.DependencyInjection Version=9.0.0.0.
-            services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
+            // Way 1 to register MediatR:
             services.AddMediatR(Assembly.GetExecutingAssembly());
+
+            // Way 2 to register MediatR:
+            //services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
 
             // Infra - Bus
             services.AddScoped<IMediatorHandlerNormalize, InMemoryBusNormalize>();

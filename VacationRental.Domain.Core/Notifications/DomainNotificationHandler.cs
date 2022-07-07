@@ -9,14 +9,14 @@ namespace VacationRental.Domain.Core.Notifications
 {
     public class DomainNotificationHandler : INotificationHandler<DomainNotification>, IDisposable
     {
-        private List<DomainNotification> _notifications;
+        private IList<DomainNotification> _notifications;
 
         public DomainNotificationHandler()
         {
             _notifications = new List<DomainNotification>();
         }
 
-        public virtual List<DomainNotification> GetNotifications()
+        public virtual IList<DomainNotification> GetNotifications()
         {
             return _notifications;
         }

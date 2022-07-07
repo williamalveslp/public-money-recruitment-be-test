@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using VacationRental.Domain.Core.Bus;
 using VacationRental.Domain.Core.Notifications;
 
@@ -18,14 +19,19 @@ namespace VacationRental.Domain.CommandHandlers
             _bus.RaiseEvent(new DomainNotification(errorMessage));
         }
 
-        protected void NotifyValidationErrors(List<string> errorMessages)
+        protected void NotifyValidationErrors(string errorMessage, HttpStatusCode httpStatusCode)
+        {
+            _bus.RaiseEvent(new DomainNotification(errorMessage, httpStatusCode));
+        }
+
+        protected void NotifyValidationErrors(IList<string> errorMessages, HttpStatusCode httpStatusCode)
         {
             if (errorMessages == null)
                 return;
 
             foreach (var item in errorMessages)
             {
-                _bus.RaiseEvent(new DomainNotification(item));
+                NotifyValidationErrors(item, httpStatusCode);
             }
         }
     }

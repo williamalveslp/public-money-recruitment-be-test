@@ -6,14 +6,24 @@ namespace VacationRental.Domain.Core.Notifications
 {
     public class DomainNotification : Event
     {
+        /// <summary>
+        /// Identifier of notification.
+        /// </summary>
         public Guid DomainNotificationId { get; private set; }
 
-        public string Key { get; private set; }
-
+        /// <summary>
+        /// Value of notification. Can be a error message, as example.
+        /// </summary>
         public string Value { get; private set; }
 
+        /// <summary>
+        /// API version.
+        /// </summary>
         public int Version { get; private set; }
 
+        /// <summary>
+        /// HttpStatusCode from request.
+        /// </summary>
         public HttpStatusCode StatusCode { get; private set; }
 
         public DomainNotification(string value)
@@ -24,20 +34,10 @@ namespace VacationRental.Domain.Core.Notifications
             StatusCode = HttpStatusCode.BadRequest;
         }
 
-        public DomainNotification(string key, string value)
+        public DomainNotification(string value, HttpStatusCode statusCode)
         {
             DomainNotificationId = Guid.NewGuid();
             Version = 1;
-            Key = key;
-            Value = value;
-            StatusCode = HttpStatusCode.BadRequest;
-        }
-
-        public DomainNotification(string key, string value, HttpStatusCode statusCode)
-        {
-            DomainNotificationId = Guid.NewGuid();
-            Version = 1;
-            Key = key;
             Value = value;
             StatusCode = statusCode;
         }
