@@ -1,6 +1,5 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
 using VacationRental.Domain.Core.Bus;
-using VacationRental.Domain.Core.Commands;
 using VacationRental.Domain.Core.Notifications;
 
 namespace VacationRental.Domain.CommandHandlers
@@ -8,19 +7,10 @@ namespace VacationRental.Domain.CommandHandlers
     public class CommandHandler
     {
         private readonly IMediatorHandlerNormalize _bus;
-        private readonly DomainNotificationHandler _notifications;
 
-        public CommandHandler(
-            IMediatorHandlerNormalize bus,
-            INotificationHandler<DomainNotification> notifications)
+        public CommandHandler(IMediatorHandlerNormalize bus)
         {
-            _notifications = (DomainNotificationHandler)notifications;
             _bus = bus;
-        }
-
-        protected void NotifyValidationErrors(string messageType, string errorMessage)
-        {
-            _bus.RaiseEvent(new DomainNotification(messageType, errorMessage));
         }
 
         protected void NotifyValidationErrors(string errorMessage)
@@ -28,24 +18,15 @@ namespace VacationRental.Domain.CommandHandlers
             _bus.RaiseEvent(new DomainNotification(errorMessage));
         }
 
-        protected void NotifyValidationErrors(ResultedCommand<long> message)
+        protected void NotifyValidationErrors(List<string> errorMessages)
         {
-            foreach (var error in message.ValidationResult.Errors)
+            if (errorMessages == null)
+                return;
+
+            foreach (var item in errorMessages)
             {
-                _bus.RaiseEvent(new DomainNotification(message.MessageType, error.ErrorMessage));
+                _bus.RaiseEvent(new DomainNotification(item));
             }
-        }
-
-        protected bool Commit()
-        {
-            if (_notifications.HasNotifications())
-                return false;
-
-            //if (_uow.Commit())
-            //    return true;
-
-            _bus.RaiseEvent(new DomainNotification("Commit", "Issues to save the data."));
-            return false;
         }
     }
 }

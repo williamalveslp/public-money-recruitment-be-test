@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace VacationRental.Domain.Core.Notifications
 {
-    public class DomainNotificationHandler : INotificationHandler<DomainNotification>
+    public class DomainNotificationHandler : INotificationHandler<DomainNotification>, IDisposable
     {
         private List<DomainNotification> _notifications;
 
@@ -34,7 +35,8 @@ namespace VacationRental.Domain.Core.Notifications
 
         public void Dispose()
         {
-            _notifications = new List<DomainNotification>();
+            _notifications = null;
+            GC.SuppressFinalize(this);
         }
     }
 }

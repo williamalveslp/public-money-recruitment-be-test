@@ -24,8 +24,7 @@ namespace VacationRental.Application.AppServices
             IRentalsRepository rentalsRepository,
             IBookingRepository bookingRepository,
             IValidator<CalendarGetByFilterViewModel> calendarValidator,
-            IMediatorHandlerNormalize bus,
-            INotificationHandler<DomainNotification> notifications) : base(bus, notifications)
+            IMediatorHandlerNormalize bus) : base(bus)
         {
             this._rentalsRepository = rentalsRepository;
             this._bookingRepository = bookingRepository;

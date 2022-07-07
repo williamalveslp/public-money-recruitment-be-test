@@ -15,8 +15,7 @@ namespace VacationRental.Application.AppServices
 
         public RentalsAppService(
             IMediatorHandlerNormalize bus,
-            INotificationHandler<DomainNotification> notifications,
-            IRentalsRepository rentalsRepository) : base(bus, notifications)
+            IRentalsRepository rentalsRepository) : base(bus)
         {
             _rentalsRepository = rentalsRepository;
         }
