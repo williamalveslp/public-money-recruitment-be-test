@@ -51,7 +51,7 @@ namespace VacationRental.Domain.Core.Handlers
         /// <returns></returns>
         public virtual bool HasNotifications()
         {
-            return GetNotifications().Any();
+            return _notifications.Any();
         }
 
         public void Dispose()

@@ -57,7 +57,7 @@ namespace VacationRental.Api.Controllers
         public ActionResult<ResourceIdViewModel> Post(BookingBindingModel viewModel)
         {
             if (!ModelState.IsValid)
-                return InvalidModelState();
+                return ResponseInvalidModelState();
 
             return Response(_bookingApp.Insert(viewModel));
         }

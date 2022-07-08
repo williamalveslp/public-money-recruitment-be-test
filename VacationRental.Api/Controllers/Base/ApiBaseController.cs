@@ -12,6 +12,9 @@ namespace VacationRental.Api.Controllers.Base
     /// </summary>
     public abstract class ApiBaseController : ControllerBase
     {
+        /// <summary>
+        /// Notifications.
+        /// </summary>
         private readonly DomainNotificationHandler _notifications;
 
         /// <summary>
@@ -29,13 +32,8 @@ namespace VacationRental.Api.Controllers.Base
         /// <returns></returns>
         protected new ActionResult Response(object response = null)
         {
-            var errors = _notifications.GetNotifications()?.Select(f => f?.Value);
-
-            if (response == null)
-                return BadRequest(new ApplicationException(string.Join(",", errors)));
-
-            if (!IsValidOperation())
-                return BadRequest(new ApplicationException(string.Join(",", errors)));
+            if (_notifications.HasNotifications())
+                return ResponseBadRequest();
 
             return Ok(response);
         }
@@ -44,14 +42,15 @@ namespace VacationRental.Api.Controllers.Base
         /// Response about that the Model State is invalid.
         /// </summary>
         /// <returns></returns>
-        protected ActionResult InvalidModelState()
+        protected ActionResult ResponseInvalidModelState()
         {
             return BadRequest(new ApplicationException("ModelState is invalid."));
         }
 
-        private bool IsValidOperation()
+        private ActionResult ResponseBadRequest()
         {
-            return !_notifications.HasNotifications();
+            var errors = _notifications.GetNotifications()?.Select(f => f?.Value);
+            return BadRequest(new ApplicationException(string.Join(",", errors)));
         }
     }
 }
