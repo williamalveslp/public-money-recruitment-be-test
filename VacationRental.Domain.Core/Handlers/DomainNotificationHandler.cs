@@ -54,10 +54,20 @@ namespace VacationRental.Domain.Core.Handlers
             return _notifications.Any();
         }
 
+        /// <summary>
+        /// Dispose pattern.
+        /// </summary>
         public void Dispose()
         {
-            _notifications = null;
+            Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing) return;
+
+            _notifications = null;
         }
     }
 }
