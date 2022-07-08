@@ -2,8 +2,7 @@
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.ViewModels;
 using VacationRental.Domain.CommandHandlers;
-using VacationRental.Domain.Core.Bus;
-using VacationRental.Domain.Core.Notifications;
+using VacationRental.Domain.Core.Interfaces;
 using VacationRental.Domain.Interfaces.Repositories;
 
 namespace VacationRental.Application.AppServices
@@ -15,7 +14,8 @@ namespace VacationRental.Application.AppServices
 
         public RentalsAppService(
             IMediatorHandlerNormalize bus,
-            IRentalsRepository rentalsRepository) : base(bus)
+            IMediator mediator,
+            IRentalsRepository rentalsRepository) : base(bus, mediator)
         {
             _rentalsRepository = rentalsRepository;
         }

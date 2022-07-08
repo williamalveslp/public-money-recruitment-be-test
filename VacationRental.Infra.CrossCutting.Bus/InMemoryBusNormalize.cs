@@ -1,5 +1,5 @@
 ﻿using VacationRental.Domain.Core.Events;
-using VacationRental.Domain.Core.Bus;
+using VacationRental.Domain.Core.Interfaces;
 using System.Threading.Tasks;
 using MediatR;
 
@@ -12,11 +12,11 @@ namespace VacationRental.Infra.CrossCutting.Bus
         public InMemoryBusNormalize(IMediator mediator)
         {
             _mediator = mediator;
-        }      
+        }
 
-        public Task RaiseEvent<T>(T @event) where T : Event
+        public Task RaiseEvent<T>(T @eventRequest)
         {
-            return _mediator.Publish(@event);
+            return _mediator.Publish(@eventRequest);
         }
     }
 }

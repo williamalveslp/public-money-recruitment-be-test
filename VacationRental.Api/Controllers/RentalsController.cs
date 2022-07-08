@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using VacationRental.Api.Controllers.Base;
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.ViewModels;
-using VacationRental.Domain.Core.Notifications;
+using VacationRental.Domain.Core.Requests;
 
 namespace VacationRental.Api.Controllers
 {
@@ -24,7 +24,7 @@ namespace VacationRental.Api.Controllers
         /// <param name="notifications"></param>
         /// <param name="rentalsApp"></param>
         public RentalsController(
-            INotificationHandler<DomainNotification> notifications,
+            INotificationHandler<DomainNotificationRequest> notifications,
             IRentalsAppService rentalsApp) : base(notifications)
         {
             this._rentalsApp = rentalsApp;
@@ -54,6 +54,9 @@ namespace VacationRental.Api.Controllers
         [ProducesResponseType(typeof(ResourceIdViewModel), StatusCodes.Status500InternalServerError)]
         public ActionResult<ResourceIdViewModel> Post(RentalBindingModel viewModel)
         {
+            if (!ModelState.IsValid)
+                return InvalidModelState();
+
             return Response(_rentalsApp.Insert(viewModel));
         }
     }

@@ -1,8 +1,9 @@
 ﻿using System.Reflection;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using VacationRental.Domain.Core.Bus;
-using VacationRental.Domain.Core.Notifications;
+using VacationRental.Domain.Core.Handlers;
+using VacationRental.Domain.Core.Interfaces;
+using VacationRental.Domain.Core.Requests;
 using VacationRental.Infra.CrossCutting.Bus;
 
 namespace VacationRental.Api.IoC
@@ -29,7 +30,7 @@ namespace VacationRental.Api.IoC
             services.AddScoped<IMediatorHandlerNormalize, InMemoryBusNormalize>();
 
             // Domain - Events
-            services.AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>();
+            services.AddScoped<INotificationHandler<DomainNotificationRequest>, DomainNotificationHandler>();
         }
     }
 }

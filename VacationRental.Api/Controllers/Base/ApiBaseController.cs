@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
-using VacationRental.Domain.Core.Notifications;
+using VacationRental.Domain.Core.Handlers;
+using VacationRental.Domain.Core.Requests;
 
 namespace VacationRental.Api.Controllers.Base
 {
@@ -16,7 +17,7 @@ namespace VacationRental.Api.Controllers.Base
         /// <summary>
         /// Constructor.
         /// </summary>
-        protected ApiBaseController(INotificationHandler<DomainNotification> notifications)
+        protected ApiBaseController(INotificationHandler<DomainNotificationRequest> notifications)
         {
             _notifications = (DomainNotificationHandler)notifications;
         }
@@ -24,19 +25,28 @@ namespace VacationRental.Api.Controllers.Base
         /// <summary>
         /// Response unificado para os endpoints.
         /// </summary>
-        /// <param name="result"></param>
+        /// <param name="response"></param>
         /// <returns></returns>
-        protected new ActionResult Response(object result = null)
+        protected new ActionResult Response(object response = null)
         {
             var errors = _notifications.GetNotifications()?.Select(f => f?.Value);
 
-            if (result == null)
+            if (response == null)
                 return BadRequest(new ApplicationException(string.Join(",", errors)));
 
             if (!IsValidOperation())
                 return BadRequest(new ApplicationException(string.Join(",", errors)));
 
-            return Ok(result);
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Response about that the Model State is invalid.
+        /// </summary>
+        /// <returns></returns>
+        protected ActionResult InvalidModelState()
+        {
+            return BadRequest(new ApplicationException("ModelState is invalid."));
         }
 
         private bool IsValidOperation()

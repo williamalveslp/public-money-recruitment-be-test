@@ -1,8 +1,9 @@
 ﻿using FluentValidation;
+using MediatR;
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.ViewModels;
 using VacationRental.Domain.CommandHandlers;
-using VacationRental.Domain.Core.Bus;
+using VacationRental.Domain.Core.Interfaces;
 using VacationRental.Domain.Interfaces.Repositories;
 using VacationRental.Infra.CrossCutting.Configs.Extensions;
 
@@ -19,7 +20,8 @@ namespace VacationRental.Application.AppServices
             IBookingRepository bookingRepository,
             IRentalsRepository rentalsRepository,
             IValidator<BookingBindingModel> userValidator,
-            IMediatorHandlerNormalize bus) : base(bus)
+            IMediator mediator,
+            IMediatorHandlerNormalize bus) : base(bus, mediator)
         {
             this._bookingRepository = bookingRepository;
             this._rentalsRepository = rentalsRepository;

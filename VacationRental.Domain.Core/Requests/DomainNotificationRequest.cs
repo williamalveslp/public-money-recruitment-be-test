@@ -2,9 +2,12 @@
 using System.Net;
 using VacationRental.Domain.Core.Events;
 
-namespace VacationRental.Domain.Core.Notifications
+namespace VacationRental.Domain.Core.Requests
 {
-    public class DomainNotification : Event
+    /// <summary>
+    /// Notification request.
+    /// </summary>
+    public class DomainNotificationRequest : Event
     {
         /// <summary>
         /// Identifier of notification.
@@ -26,7 +29,7 @@ namespace VacationRental.Domain.Core.Notifications
         /// </summary>
         public HttpStatusCode StatusCode { get; private set; }
 
-        public DomainNotification(string value)
+        public DomainNotificationRequest(string value)
         {
             DomainNotificationId = Guid.NewGuid();
             Version = 1;
@@ -34,7 +37,7 @@ namespace VacationRental.Domain.Core.Notifications
             StatusCode = HttpStatusCode.BadRequest;
         }
 
-        public DomainNotification(string value, HttpStatusCode statusCode)
+        public DomainNotificationRequest(string value, HttpStatusCode statusCode)
         {
             DomainNotificationId = Guid.NewGuid();
             Version = 1;

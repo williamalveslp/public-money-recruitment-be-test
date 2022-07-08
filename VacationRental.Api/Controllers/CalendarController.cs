@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using VacationRental.Api.Controllers.Base;
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.ViewModels;
-using VacationRental.Domain.Core.Notifications;
+using VacationRental.Domain.Core.Requests;
 
 namespace VacationRental.Api.Controllers
 {
@@ -24,7 +24,7 @@ namespace VacationRental.Api.Controllers
         /// <param name="calendarApp"></param>
         /// <param name="notifications"></param>
         public CalendarController(
-            INotificationHandler<DomainNotification> notifications,
+            INotificationHandler<DomainNotificationRequest> notifications,
             ICalendarAppService calendarApp) : base(notifications)
         {
             this._calendarApp = calendarApp;

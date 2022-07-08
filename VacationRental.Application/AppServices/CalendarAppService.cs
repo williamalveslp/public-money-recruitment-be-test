@@ -6,8 +6,7 @@ using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.ViewModels;
 using VacationRental.Application.ViewModels.Calendars;
 using VacationRental.Domain.CommandHandlers;
-using VacationRental.Domain.Core.Bus;
-using VacationRental.Domain.Core.Notifications;
+using VacationRental.Domain.Core.Interfaces;
 using VacationRental.Domain.Interfaces.Repositories;
 using VacationRental.Infra.CrossCutting.Configs.Extensions;
 
@@ -24,7 +23,8 @@ namespace VacationRental.Application.AppServices
             IRentalsRepository rentalsRepository,
             IBookingRepository bookingRepository,
             IValidator<CalendarGetByFilterViewModel> calendarValidator,
-            IMediatorHandlerNormalize bus) : base(bus)
+            IMediator mediator,
+            IMediatorHandlerNormalize bus) : base(bus, mediator)
         {
             this._rentalsRepository = rentalsRepository;
             this._bookingRepository = bookingRepository;
