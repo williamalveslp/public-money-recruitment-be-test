@@ -25,7 +25,7 @@ namespace VacationRental.Api.IoC
             // Validators.
             services.AddValidators();
 
-            // Handlers (MediarR, Notifications, etc).
+            // Handlers (MediatR, Notifications, etc).
             services.AddHandlers();
 
             // AppServices.

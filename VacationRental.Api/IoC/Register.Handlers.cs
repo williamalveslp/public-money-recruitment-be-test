@@ -2,9 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using VacationRental.Domain.Core.Handlers;
-using VacationRental.Domain.Core.Interfaces;
 using VacationRental.Domain.Core.Requests;
-using VacationRental.Infra.CrossCutting.Bus;
 
 namespace VacationRental.Api.IoC
 {
@@ -25,9 +23,6 @@ namespace VacationRental.Api.IoC
 
             // Way 2 to register MediatR:
             //services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
-
-            // Infra - Bus
-            services.AddScoped<IMediatorHandlerNormalize, InMemoryBusNormalize>();
 
             // Domain - Events
             services.AddScoped<INotificationHandler<DomainNotificationRequest>, DomainNotificationHandler>();

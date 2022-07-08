@@ -6,7 +6,7 @@ namespace VacationRental.Domain.Core.Events
     /// <summary>
     /// Abstract class as event using MediatR.
     /// </summary>
-    public abstract class Event : INotification //, IRequest
+    public abstract class EventNotification : INotification
     {
         /// <summary>
         /// Timestamp of the notification.
@@ -20,10 +20,10 @@ namespace VacationRental.Domain.Core.Events
 
         public Guid AggregateId { get; protected set; }
 
-        protected Event()
+        protected EventNotification()
         {
-            MessageType = GetType().Name;
-            Timestamp = DateTime.Now;
+            this.MessageType = GetType().Name;
+            this.Timestamp = DateTime.Now;
         }
     }
 }

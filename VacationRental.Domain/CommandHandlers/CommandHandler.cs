@@ -1,23 +1,16 @@
 ﻿using MediatR;
 using System.Collections.Generic;
 using System.Net;
-using VacationRental.Domain.Core.Interfaces;
 using VacationRental.Domain.Core.Requests;
 
 namespace VacationRental.Domain.CommandHandlers
 {
-    public class CommandHandler
+    public abstract class CommandHandler
     {
-        /// <summary>
-        /// Mediator Handler to calls Bus handler.
-        /// </summary>
-        private readonly IMediatorHandlerNormalize _mediatorHandler;
-
         private readonly IMediator _mediator;
 
-        public CommandHandler(IMediatorHandlerNormalize mediatorHandler, IMediator mediator)
+        protected CommandHandler(IMediator mediator)
         {
-            _mediatorHandler = mediatorHandler;
             _mediator = mediator;
         }
 
@@ -59,8 +52,6 @@ namespace VacationRental.Domain.CommandHandlers
         private void PublishNotificationHandler(DomainNotificationRequest request)
         {
             _mediator.Publish(request);
-
-           // _mediatorHandler.RaiseEvent(request);
         }
     }
 }

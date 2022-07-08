@@ -7,7 +7,7 @@ namespace VacationRental.Domain.Core.Requests
     /// <summary>
     /// Notification request.
     /// </summary>
-    public class DomainNotificationRequest : Event
+    public class DomainNotificationRequest : EventNotification
     {
         /// <summary>
         /// Identifier of notification.
@@ -31,18 +31,20 @@ namespace VacationRental.Domain.Core.Requests
 
         public DomainNotificationRequest(string value)
         {
-            DomainNotificationId = Guid.NewGuid();
-            Version = 1;
-            Value = value;
-            StatusCode = HttpStatusCode.BadRequest;
+            Initial(value, HttpStatusCode.BadRequest);
         }
 
         public DomainNotificationRequest(string value, HttpStatusCode statusCode)
         {
-            DomainNotificationId = Guid.NewGuid();
-            Version = 1;
-            Value = value;
-            StatusCode = statusCode;
+            Initial(value, statusCode);
+        }
+
+        private void Initial(string value, HttpStatusCode statusCode)
+        {
+            this.DomainNotificationId = Guid.NewGuid();
+            this.Version = 1;
+            this.Value = value;
+            this.StatusCode = statusCode;
         }
     }
 }

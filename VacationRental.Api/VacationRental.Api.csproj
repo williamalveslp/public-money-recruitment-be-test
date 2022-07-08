@@ -22,7 +22,6 @@
     <ProjectReference Include="..\VacationRental.Application\VacationRental.Application.csproj" />
     <ProjectReference Include="..\VacationRental.Domain.Core\VacationRental.Domain.Core.csproj" />
     <ProjectReference Include="..\VacationRental.Domain\VacationRental.Domain.csproj" />
-    <ProjectReference Include="..\VacationRental.Infra.CrossCutting.Bus\VacationRental.Infra.CrossCutting.Bus.csproj" />
     <ProjectReference Include="..\VacationRental.Infra.CrossCutting.Configs\VacationRental.Infra.CrossCutting.Configs.csproj" />
     <ProjectReference Include="..\VacationRental.Infra.DataSource\VacationRental.Infra.DataSource.csproj" />
   </ItemGroup>

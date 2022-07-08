@@ -3,7 +3,6 @@ using MediatR;
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.ViewModels;
 using VacationRental.Domain.CommandHandlers;
-using VacationRental.Domain.Core.Interfaces;
 using VacationRental.Domain.Interfaces.Repositories;
 using VacationRental.Infra.CrossCutting.Configs.Extensions;
 
@@ -20,8 +19,7 @@ namespace VacationRental.Application.AppServices
             IBookingRepository bookingRepository,
             IRentalsRepository rentalsRepository,
             IValidator<BookingBindingModel> userValidator,
-            IMediator mediator,
-            IMediatorHandlerNormalize bus) : base(bus, mediator)
+            IMediator mediator) : base(mediator)
         {
             this._bookingRepository = bookingRepository;
             this._rentalsRepository = rentalsRepository;
@@ -92,8 +90,7 @@ namespace VacationRental.Application.AppServices
 
             _bookingRepository.Insert(newBookingId, viewModel.RentalId, viewModel.Start.Date, viewModel.Nights);
 
-            var key = new ResourceIdViewModel { Id = newBookingId };
-            return key;
+            return new ResourceIdViewModel { Id = newBookingId };
         }
     }
 }

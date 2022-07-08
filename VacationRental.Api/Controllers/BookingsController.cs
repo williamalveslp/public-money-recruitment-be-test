@@ -38,6 +38,7 @@ namespace VacationRental.Api.Controllers
         [HttpGet]
         [Route("{bookingId:int}")]
         [ProducesResponseType(typeof(BookingViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApplicationException), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApplicationException), StatusCodes.Status500InternalServerError)]
         public ActionResult<BookingViewModel> Get(int bookingId)
         {
@@ -51,6 +52,7 @@ namespace VacationRental.Api.Controllers
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(typeof(ResourceIdViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApplicationException), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApplicationException), StatusCodes.Status500InternalServerError)]
         public ActionResult<ResourceIdViewModel> Post(BookingBindingModel viewModel)
         {

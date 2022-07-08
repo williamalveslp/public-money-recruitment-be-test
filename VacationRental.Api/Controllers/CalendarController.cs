@@ -39,6 +39,7 @@ namespace VacationRental.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(typeof(CalendarViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApplicationException), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApplicationException), StatusCodes.Status500InternalServerError)]
         public ActionResult<CalendarViewModel> Get(int rentalId, DateTime start, int nights)
         {
