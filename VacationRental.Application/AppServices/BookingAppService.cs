@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
+using System.Net;
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.ViewModels;
 using VacationRental.Domain.CommandHandlers;
 using VacationRental.Domain.Interfaces.Repositories;
-using VacationRental.Infra.CrossCutting.Configs.Extensions;
 
 namespace VacationRental.Application.AppServices
 {
@@ -13,17 +13,14 @@ namespace VacationRental.Application.AppServices
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly IRentalsRepository _rentalsRepository;
-        private readonly IValidator<BookingBindingModel> _userValidator;
 
         public BookingAppService(
             IBookingRepository bookingRepository,
             IRentalsRepository rentalsRepository,
-            IValidator<BookingBindingModel> userValidator,
             IMediator mediator) : base(mediator)
         {
             this._bookingRepository = bookingRepository;
             this._rentalsRepository = rentalsRepository;
-            this._userValidator = userValidator;
         }
 
         public BookingViewModel GetById(int bookingId)
@@ -47,11 +44,9 @@ namespace VacationRental.Application.AppServices
 
         public ResourceIdViewModel Insert(BookingBindingModel viewModel)
         {
-            var validator = _userValidator.Validate(viewModel);
-
-            if (!validator.IsValid)
+            if (!viewModel.Validator().IsValid)
             {
-                NotifyValidationErrors(validator.GetErrors());
+                NotifyValidationErrors(viewModel.ValidatorErrorsMessage, HttpStatusCode.BadRequest);
                 return default;
             }
 
@@ -88,7 +83,7 @@ namespace VacationRental.Application.AppServices
 
             var newBookingId = _bookingRepository.GetNextId();
 
-            _bookingRepository.Insert(newBookingId, viewModel.RentalId, viewModel.Start.Date, viewModel.Nights);
+            _ = _bookingRepository.Insert(newBookingId, viewModel.RentalId, viewModel.Start.Date, viewModel.Nights);
 
             return new ResourceIdViewModel { Id = newBookingId };
         }

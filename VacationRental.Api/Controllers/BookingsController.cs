@@ -51,7 +51,7 @@ namespace VacationRental.Api.Controllers
         /// <param name="viewModel"></param>
         /// <returns></returns>
         [HttpPost]
-        [ProducesResponseType(typeof(ResourceIdViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BookingBindingModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApplicationException), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApplicationException), StatusCodes.Status500InternalServerError)]
         public ActionResult<ResourceIdViewModel> Post(BookingBindingModel viewModel)

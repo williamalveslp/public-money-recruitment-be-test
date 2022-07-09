@@ -5,7 +5,7 @@ namespace VacationRental.Application.Validations
 {
     public class CalendarGetByFilterValidator : AbstractValidator<CalendarGetByFilterViewModel>
     {
-        private readonly string CODE = "Calendar-Code";
+        private readonly string CODE = nameof(CalendarGetByFilterValidator);
 
         public CalendarGetByFilterValidator()
         {
@@ -17,13 +17,13 @@ namespace VacationRental.Application.Validations
 
             RuleFor(f => f.Nights)
               .GreaterThan(0)
-              .WithMessage("Nights must be positive")
+              .WithMessage(f => $"{nameof(f.Nights)} must be positive")
               .WithErrorCode($"{CODE}-002")
               .WithSeverity(Severity.Error);
 
             RuleFor(f => f.RentalId)
               .GreaterThan(0)
-              .WithMessage("RentalId must be positive")
+              .WithMessage(f => $"{nameof(f.RentalId)} must be positive")
               .WithErrorCode($"{CODE}-003")
               .WithSeverity(Severity.Error);
         }

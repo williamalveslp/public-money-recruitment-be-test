@@ -50,7 +50,7 @@ namespace VacationRental.Api.Controllers.Base
         private ActionResult ResponseBadRequest()
         {
             var errors = _notifications.GetNotifications()?.Select(f => f?.Value);
-            return BadRequest(new ApplicationException(string.Join(",", errors)));
+            return BadRequest(new ApplicationException(string.Join(", ", errors)));
         }
     }
 }
