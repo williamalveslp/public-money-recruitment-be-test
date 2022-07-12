@@ -10,24 +10,31 @@ namespace VacationRental.Application.ViewModels
     /// </summary>
     public abstract class ViewModelValidatorBase
     {
-        private IList<string> _validErrorsMessage;
-         
+        private IEnumerable<ValidationFailure> _validatorsFailuresMessage;
+
         /// <summary>
-        /// List of errors from validators.
+        /// List of failures from validators.
         /// </summary>
-        [JsonProperty("errorsMessage")]
+        [JsonProperty("failuresMessage")]
         [JsonIgnore]
-        public IList<string> ValidatorErrorsMessage
+        public IEnumerable<ValidationFailure> ValidatorFailuresMessage
         {
-            get { return _validErrorsMessage; }
-            set
+            get { return _validatorsFailuresMessage; }
+            private set
             {
                 if (value == null || !value.Any())
                     this.IsValid = true;
 
-                this._validErrorsMessage = value;
+                this._validatorsFailuresMessage = value;
             }
         }
+
+        /// <summary>
+        /// List of errors message.
+        /// </summary>
+        [JsonIgnore]
+        public IEnumerable<string> ErrorsMessage =>
+            _validatorsFailuresMessage?.Select(f => f?.ErrorMessage);
 
         /// <summary>
         /// Start as false to wait the validation.
@@ -41,9 +48,15 @@ namespace VacationRental.Application.ViewModels
         /// <returns></returns>
         public abstract ValidationResult Validator();
 
+        /// <summary>
+        /// Get the validation normalized.
+        /// </summary>
+        /// <param name="validationResult">ValidationResult rules.</param>
+        /// <returns></returns>
         protected ValidationResult GetValidationResultNormalized(ValidationResult validationResult)
         {
-            this.ValidatorErrorsMessage = validationResult?.Errors?.Select(f => f?.ErrorMessage)?.ToList();
+            this.ValidatorFailuresMessage = validationResult?.Errors?.Select(f => f);
+
             return validationResult;
         }
     }

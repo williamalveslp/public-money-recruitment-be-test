@@ -25,21 +25,21 @@ namespace VacationRental.Domain.Core.Requests
         public int Version { get; private set; }
 
         /// <summary>
-        /// HttpStatusCode from request.
+        /// Http Status Code from request.
         /// </summary>
         public HttpStatusCode StatusCode { get; private set; }
 
         public DomainNotificationRequest(string value)
         {
-            Initial(value, HttpStatusCode.BadRequest);
+            InitialComponents(value, HttpStatusCode.BadRequest);
         }
 
         public DomainNotificationRequest(string value, HttpStatusCode statusCode)
         {
-            Initial(value, statusCode);
+            InitialComponents(value, statusCode);
         }
 
-        private void Initial(string value, HttpStatusCode statusCode)
+        private void InitialComponents(string value, HttpStatusCode statusCode)
         {
             this.DomainNotificationId = Guid.NewGuid();
             this.Version = 1;

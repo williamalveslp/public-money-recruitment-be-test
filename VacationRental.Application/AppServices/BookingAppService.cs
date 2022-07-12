@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using MediatR;
+﻿using MediatR;
 using System.Net;
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.ViewModels;
@@ -46,7 +45,7 @@ namespace VacationRental.Application.AppServices
         {
             if (!viewModel.Validator().IsValid)
             {
-                NotifyValidationErrors(viewModel.ValidatorErrorsMessage, HttpStatusCode.BadRequest);
+                NotifyValidationErrors(viewModel.ErrorsMessage, HttpStatusCode.BadRequest);
                 return default;
             }
 
