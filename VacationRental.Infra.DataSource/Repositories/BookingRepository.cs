@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using VacationRental.Domain.Entities;
 using VacationRental.Domain.Interfaces.Repositories;
+using VacationRental.Domain.Queries;
 
 namespace VacationRental.Infra.DataSource.Repositories
 {
@@ -51,5 +52,65 @@ namespace VacationRental.Infra.DataSource.Repositories
         {
             return GetNextId(_bookings);
         }
+
+        public bool IsAvailable(int rentalId, DateTime start, int nights, IDictionary<int, Rental> rentals)
+        {
+            var bookings = GetAll();
+
+            for (var i = 0; i < nights; i++)
+            {
+                var count = 0;
+
+                foreach (var booking in bookings.Values)
+                {
+                    if (booking.RentalId == rentalId
+                        && (booking.Start <= start.Date && booking.Start.AddDays(booking.Nights) > start.Date)
+                        || (booking.Start < start.AddDays(nights) && booking.Start.AddDays(booking.Nights) >= start.AddDays(nights))
+                        || (booking.Start > start && booking.Start.AddDays(booking.Nights) < start.AddDays(nights)))
+                    {
+                        count++;
+                    }
+                }
+                if (count >= rentals[rentalId].Units)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public CalendarQuery CalendarDatesNormalized(int rentalId, int nights, DateTime start)
+        {
+            var bookings = GetAll();
+
+            var result = new CalendarQuery
+            {
+                RentalId = rentalId,
+                Dates = new List<CalendarDateQuery>()
+            };
+
+            for (var i = 0; i < nights; i++)
+            {
+                var date = new CalendarDateQuery
+                {
+                    Date = start.Date.AddDays(i),
+                    Bookings = new List<CalendarBookingQuery>()
+                };
+
+                foreach (var booking in bookings.Values)
+                {
+                    if (booking.RentalId == rentalId
+                        && booking.Start <= date.Date && booking.Start.AddDays(booking.Nights) > date.Date)
+                    {
+                        date.Bookings.Add(new CalendarBookingQuery { Id = booking.Id });
+                    }
+                }
+
+                result.Dates.Add(date);
+            }
+
+            return result;
+        } 
     }
 }

@@ -2,11 +2,13 @@
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using VacationRental.Application.AppInterfaces;
 using VacationRental.Application.ViewModels;
 using VacationRental.Application.ViewModels.Calendars;
 using VacationRental.Domain.CommandHandlers;
 using VacationRental.Domain.Interfaces.Repositories;
+using VacationRental.Domain.Queries;
 using VacationRental.Infra.CrossCutting.Configs.Extensions;
 
 namespace VacationRental.Application.AppServices
@@ -54,35 +56,40 @@ namespace VacationRental.Application.AppServices
                 return default;
             }
 
-            var bookings = _bookingRepository.GetAll();
+            var calendarNormalizedQuery = _bookingRepository.CalendarDatesNormalized(rentalId, nights, start);
 
-            var result = new CalendarViewModel
+            return MappingCalendarQueryToViewModel(calendarNormalizedQuery);
+        }
+
+        private CalendarViewModel MappingCalendarQueryToViewModel(CalendarQuery calendarNormalizedQuery)
+        {
+            if (calendarNormalizedQuery == null)
+                return default;
+
+            var resultViewModel = new CalendarViewModel
             {
-                RentalId = rentalId,
+                RentalId = calendarNormalizedQuery.RentalId,
                 Dates = new List<CalendarDateViewModel>()
             };
 
-            for (var i = 0; i < nights; i++)
+            foreach (var item in calendarNormalizedQuery?.Dates)
             {
-                var date = new CalendarDateViewModel
+                var bookigItem = item?.Bookings?.Select(f => new CalendarBookingViewModel
                 {
-                    Date = start.Date.AddDays(i),
-                    Bookings = new List<CalendarBookingViewModel>()
-                };
+                    Id = f.Id
+                });
 
-                foreach (var booking in bookings.Values)
+                if (bookigItem == null)
+                    continue;
+
+                resultViewModel.Dates.Add(new CalendarDateViewModel
                 {
-                    if (booking.RentalId == rentalId
-                        && booking.Start <= date.Date && booking.Start.AddDays(booking.Nights) > date.Date)
-                    {
-                        date.Bookings.Add(new CalendarBookingViewModel { Id = booking.Id });
-                    }
-                }
-
-                result.Dates.Add(date);
+                    Bookings = bookigItem.ToList(),
+                    Date = item.Date
+                });
             }
 
-            return result;
+            return resultViewModel;
         }
     }
 }

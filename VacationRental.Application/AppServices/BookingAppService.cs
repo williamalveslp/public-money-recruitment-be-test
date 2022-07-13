@@ -57,34 +57,19 @@ namespace VacationRental.Application.AppServices
                 return default;
             }
 
-            var bookings = _bookingRepository.GetAll();
+            var isAvailable = _bookingRepository.IsAvailable(viewModel.RentalId, viewModel.Start, viewModel.Nights, rentals);
 
-            for (var i = 0; i < viewModel.Nights; i++)
+            if (!isAvailable)
             {
-                var count = 0;
-
-                foreach (var booking in bookings.Values)
-                {
-                    if (booking.RentalId == viewModel.RentalId
-                        && (booking.Start <= viewModel.Start.Date && booking.Start.AddDays(booking.Nights) > viewModel.Start.Date)
-                        || (booking.Start < viewModel.Start.AddDays(viewModel.Nights) && booking.Start.AddDays(booking.Nights) >= viewModel.Start.AddDays(viewModel.Nights))
-                        || (booking.Start > viewModel.Start && booking.Start.AddDays(booking.Nights) < viewModel.Start.AddDays(viewModel.Nights)))
-                    {
-                        count++;
-                    }
-                }
-                if (count >= rentals[viewModel.RentalId].Units)
-                {
-                    NotifyValidationErrors("Not available");
-                    return default;
-                }
+                NotifyValidationErrors("Not available");
+                return default;
             }
 
             var newBookingId = _bookingRepository.GetNextId();
 
-            _ = _bookingRepository.Insert(newBookingId, viewModel.RentalId, viewModel.Start.Date, viewModel.Nights);
+            var result = _bookingRepository.Insert(newBookingId, viewModel.RentalId, viewModel.Start.Date, viewModel.Nights);
 
-            return new ResourceIdViewModel { Id = newBookingId };
+            return new ResourceIdViewModel { Id = result.Id };
         }
     }
 }
